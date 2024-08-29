@@ -13,11 +13,43 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import SearchInput from "@/components/search-input";
 import { format } from "date-fns";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Terminal } from "lucide-react";
+import AutoDismissAlert from "@/components/auto-dismiss-alert";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
   const searchQuery = searchParams?.search ?? "";
+  const alertType = searchParams?.alert;
+
+  const renderAlert = () => {
+    if (alertType === "created") {
+      return (
+        <AutoDismissAlert
+          title="Snippet Created"
+          description="Your snippet was created successfully."
+        />
+      );
+    } else if (alertType === "deleted") {
+      return (
+        <AutoDismissAlert
+          title="Snippet Deleted"
+          description="Your snippet was deleted successfully."
+        />
+      );
+    } else if (alertType === "error") {
+      return (
+        <AutoDismissAlert
+          title="Error"
+          description="Something went wrong. Please try again later."
+        />
+      );
+    }
+    return null;
+  };
+
   const snippets = searchQuery
     ? await searchSnippets(searchQuery)
     : await db.snippet.findMany({
@@ -28,9 +60,11 @@ export default async function Home({ searchParams }: { searchParams: any }) {
 
   const renderSnippets = snippets.map((snippet) => {
     return (
-      <TableRow key={snippet.id}>
+      <TableRow key={snippet.id} className="hover:bg-muted">
         <TableCell className="w-[500px]">{snippet.title}</TableCell>
-        <TableCell>{snippet.type}</TableCell>
+        <TableCell>
+          <Badge variant="outline">{snippet.type}</Badge>
+        </TableCell>
         <TableCell>
           {format(new Date(snippet.createdAt), "yyyy-MM-dd HH:mm:ss")}
         </TableCell>
@@ -61,7 +95,7 @@ export default async function Home({ searchParams }: { searchParams: any }) {
         </Link>
       </div>
       <Separator className="my-4" />
-      {/* <div className="flex flex-col gap-2">{renderSnippets}</div> */}
+      {renderAlert()}
       <Table>
         <TableCaption>A list your recent snippets</TableCaption>
         <TableHeader>

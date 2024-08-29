@@ -4,13 +4,18 @@ import { db } from "../app/db";
 import { redirect } from "next/navigation";
 
 export async function createSnippet(title: string, code: string) {
-  await db.snippet.create({
-    data: {
-      title,
-      code,
-    },
-  });
-  redirect("/");
+  try {
+    await db.snippet.create({
+      data: {
+        title,
+        code,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    redirect("/?alert=error");
+  }
+  redirect("/?alert=created");
 }
 
 export async function editSnippets(id: number, code: string) {
@@ -26,12 +31,17 @@ export async function editSnippets(id: number, code: string) {
 }
 
 export async function deleteSnippet(id: number) {
-  await db.snippet.delete({
-    where: {
-      id,
-    },
-  });
-  redirect("/");
+  try {
+    await db.snippet.delete({
+      where: {
+        id,
+      },
+    }); // Redirect dengan query parameter
+  } catch (error) {
+    console.log(error);
+    redirect("/?alert=error"); // Redirect dengan error query parameter
+  }
+  redirect("/?alert=deleted");
 }
 
 export async function searchSnippets(query: string) {

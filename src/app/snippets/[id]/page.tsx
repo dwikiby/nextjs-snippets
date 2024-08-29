@@ -5,6 +5,16 @@ import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import SnippetCodeBlock from "@/components/snippet-code-block";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface SnippetShowPageProps {
   params: {
@@ -37,11 +47,28 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
           <Link href={`/snippets/${snippet.id}/edit`}>
             <Button>Edit</Button>
           </Link>
-          <form action={deleteSnippetAction}>
-            <Button variant="destructive" type="submit">
-              Delete
-            </Button>
-          </form>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your snippet.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <form action={deleteSnippetAction}>
+                  <Button variant="destructive" type="submit">
+                    Delete
+                  </Button>
+                </form>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
       <Separator className="my-4" />
