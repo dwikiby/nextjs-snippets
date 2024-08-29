@@ -1,10 +1,20 @@
 import Link from "next/link";
 import { db } from "./db";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Search, PlusCircle } from "lucide-react";
 import { searchSnippets } from "@/actions";
+import { Button } from "@/components/ui/button";
+import { Search, PlusCircle } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableCaption,
+  TableHeader,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 import SearchInput from "@/components/search-input";
+import { format } from "date-fns";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
   const searchQuery = searchParams?.search ?? "";
@@ -18,14 +28,18 @@ export default async function Home({ searchParams }: { searchParams: any }) {
 
   const renderSnippets = snippets.map((snippet) => {
     return (
-      <Link
-        key={snippet.id}
-        className="flex justify-between items-center p-2 border rounded-sm shadow-sm"
-        href={`/snippets/${snippet.id}`}
-      >
-        <div>{snippet.title}</div>
-        <div>View</div>
-      </Link>
+      <TableRow key={snippet.id}>
+        <TableCell className="w-[500px]">{snippet.title}</TableCell>
+        <TableCell>{snippet.type}</TableCell>
+        <TableCell>
+          {format(new Date(snippet.createdAt), "yyyy-MM-dd HH:mm:ss")}
+        </TableCell>
+        <TableCell>
+          <Link href={`/snippets/${snippet.id}`}>
+            <Button variant="outline">View</Button>
+          </Link>
+        </TableCell>
+      </TableRow>
     );
   });
 
@@ -47,7 +61,19 @@ export default async function Home({ searchParams }: { searchParams: any }) {
         </Link>
       </div>
       <Separator className="my-4" />
-      <div className="flex flex-col gap-2">{renderSnippets}</div>
+      {/* <div className="flex flex-col gap-2">{renderSnippets}</div> */}
+      <Table>
+        <TableCaption>A list your recent snippets</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[200px]">Title</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Created at</TableHead>
+            <TableHead>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>{renderSnippets}</TableBody>
+      </Table>
     </div>
   );
 }

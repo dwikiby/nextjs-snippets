@@ -3,6 +3,16 @@
 import { db } from "../app/db";
 import { redirect } from "next/navigation";
 
+export async function createSnippet(title: string, code: string) {
+  await db.snippet.create({
+    data: {
+      title,
+      code,
+    },
+  });
+  redirect("/");
+}
+
 export async function editSnippets(id: number, code: string) {
   await db.snippet.update({
     where: {
@@ -30,7 +40,7 @@ export async function searchSnippets(query: string) {
       OR: [
         {
           title: {
-            contains: query, // Optional: Makes the search case insensitive
+            contains: query,
           },
         },
         {

@@ -2,6 +2,7 @@ import { db } from "@/app/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import SnippetEditForm from "@/components/snippet-edit-form";
+import { Separator } from "@/components/ui/separator";
 
 interface SnippetEditPageProps {
   params: {
@@ -30,6 +31,7 @@ export default async function SnippetEditPage(props: SnippetEditPageProps) {
           </h1>
         </Link>
       </div>
+      <Separator className="my-4" />
       <div>
         <SnippetEditForm snippet={snippet} />
       </div>
