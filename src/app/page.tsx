@@ -16,8 +16,6 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import SearchInput from "@/components/search-input";
 import { format } from "date-fns";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Terminal } from "lucide-react";
 import AutoDismissAlert from "@/components/auto-dismiss-alert";
 
 export default async function Home({ searchParams }: { searchParams: any }) {

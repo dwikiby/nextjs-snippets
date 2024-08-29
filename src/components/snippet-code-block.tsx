@@ -14,7 +14,6 @@ export default function SnippetCodeBlock({ code }: SnippetCodeBlockProps) {
     navigator.clipboard.writeText(code);
     setIsCopied(true);
 
-    // Reset the button label after 2 seconds
     setTimeout(() => setIsCopied(false), 2000);
   };
 
