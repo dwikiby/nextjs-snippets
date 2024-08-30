@@ -17,9 +17,20 @@ import { Badge } from "@/components/ui/badge";
 import SearchInput from "@/components/search-input";
 import { format } from "date-fns";
 import AutoDismissAlert from "@/components/auto-dismiss-alert";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
   const searchQuery = searchParams?.search ?? "";
+  const page = parseInt(searchParams?.page) || 1;
+  const pageSize = 10; // Adjust as needed
   const alertType = searchParams?.alert;
 
   const renderAlert = () => {
@@ -48,13 +59,11 @@ export default async function Home({ searchParams }: { searchParams: any }) {
     return null;
   };
 
-  const snippets = searchQuery
-    ? await searchSnippets(searchQuery)
-    : await db.snippet.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-      });
+  const { snippets, totalSnippets } = searchQuery
+    ? await searchSnippets(searchQuery, page, pageSize)
+    : await searchSnippets("", page, pageSize);
+
+  const totalPages = Math.ceil(totalSnippets / pageSize);
 
   const renderSnippets = snippets.map((snippet) => {
     return (
@@ -64,7 +73,9 @@ export default async function Home({ searchParams }: { searchParams: any }) {
           <Badge variant="outline">{snippet.type}</Badge>
         </TableCell>
         <TableCell>
-          {format(new Date(snippet.createdAt), "yyyy-MM-dd HH:mm:ss")}
+          <Badge variant="outline" className="w-30">
+            {format(new Date(snippet.createdAt), "yyyy-MM-dd HH:mm:ss")}
+          </Badge>
         </TableCell>
         <TableCell>
           <Link href={`/snippets/${snippet.id}`}>
@@ -106,6 +117,34 @@ export default async function Home({ searchParams }: { searchParams: any }) {
         </TableHeader>
         <TableBody>{renderSnippets}</TableBody>
       </Table>
+      <Pagination className="mt-4">
+        <PaginationContent>
+          {page > 1 && (
+            <PaginationItem>
+              <PaginationPrevious
+                href={`?search=${searchQuery}&page=${page - 1}`}
+              />
+            </PaginationItem>
+          )}
+          {Array.from({ length: totalPages }, (_, index) => (
+            <PaginationItem key={index}>
+              <PaginationLink
+                href={`?search=${searchQuery}&page=${index + 1}`}
+                isActive={index + 1 === page}
+              >
+                {index + 1}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          {page < totalPages && (
+            <PaginationItem>
+              <PaginationNext
+                href={`?search=${searchQuery}&page=${page + 1}`}
+              />
+            </PaginationItem>
+          )}
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 }

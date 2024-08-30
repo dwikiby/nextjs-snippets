@@ -15,6 +15,7 @@ export default function SearchInput() {
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.set("search", e.target.value);
     router.push(`?${searchParams.toString()}`);
+    router.refresh(); // Tambahkan ini
   };
 
   return (
