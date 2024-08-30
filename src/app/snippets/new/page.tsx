@@ -1,6 +1,8 @@
 import SnippetCreateForm from "@/components/snippet-create-form";
 import * as actions from "@/actions";
 
+export const dynamic = "force-dynamic";
+
 export default function SnippetCreatePage() {
   async function createSnippet(formData: FormData) {
     "use server";
