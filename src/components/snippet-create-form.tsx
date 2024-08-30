@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react"; // Icon loading
 
 const snippetSchema = z.object({
   title: z.string().min(1, { message: "Title is required" }),
@@ -21,6 +22,7 @@ export default function SnippetCreateForm({
   onSubmit: (data: FormData) => void;
 }) {
   const [errors, setErrors] = useState<{ title?: string; code?: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,7 +43,9 @@ export default function SnippetCreateForm({
     }
 
     setErrors({});
-    onSubmit(formData);
+    setIsLoading(true);
+    await onSubmit(formData);
+    setIsLoading(false);
   };
 
   return (
@@ -77,7 +81,16 @@ export default function SnippetCreateForm({
           />
         </div>
         <div className="flex justify-end gap-4">
-          <Button type="submit">Create</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Loading...
+              </>
+            ) : (
+              "Create"
+            )}
+          </Button>
           <Link href="/">
             <Button variant="outline">Cancel</Button>
           </Link>

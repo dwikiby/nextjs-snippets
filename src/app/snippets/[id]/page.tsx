@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import DeleteButtonWithLoading from "@/components/delete-button-loading";
 
 interface SnippetShowPageProps {
   params: {
@@ -62,9 +63,7 @@ export default async function SnippetShowPage(props: SnippetShowPageProps) {
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <form action={deleteSnippetAction}>
-                  <Button variant="destructive" type="submit">
-                    Delete
-                  </Button>
+                  <DeleteButtonWithLoading deleteAction={deleteSnippetAction} />
                 </form>
               </AlertDialogFooter>
             </AlertDialogContent>

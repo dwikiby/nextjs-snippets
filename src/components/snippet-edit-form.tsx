@@ -5,6 +5,7 @@ import Editor from "@monaco-editor/react";
 import { useState } from "react";
 import { Button } from "./ui/button";
 import * as actions from "@/actions";
+import { Loader2 } from "lucide-react"; // Icon loading
 
 interface SnippetEditFormProps {
   snippet: Snippet;
@@ -12,11 +13,19 @@ interface SnippetEditFormProps {
 
 export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
   const [code, setCode] = useState(snippet.code);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleEditorChange = (value: string = "") => {
     setCode(value);
   };
 
-  const editSnippetAction = actions.editSnippets.bind(null, snippet.id, code);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsLoading(true);
+    await actions.editSnippets(snippet.id, code);
+    setIsLoading(false);
+  };
+
   return (
     <div>
       <Editor
@@ -31,9 +40,20 @@ export default function SnippetEditForm({ snippet }: SnippetEditFormProps) {
         }}
         onChange={handleEditorChange}
       />
-      <form action={editSnippetAction}>
-        <Button type="submit" className="mt-4 relative w-full">
-          Edit
+      <form onSubmit={handleSubmit}>
+        <Button
+          type="submit"
+          className="mt-4 relative w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Loading...
+            </>
+          ) : (
+            "Edit Snippet"
+          )}
         </Button>
       </form>
     </div>
