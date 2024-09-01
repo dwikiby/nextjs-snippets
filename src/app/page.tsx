@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { db } from "./db";
 import { searchSnippets } from "@/actions";
 import { Button } from "@/components/ui/button";
 import { Search, PlusCircle } from "lucide-react";
@@ -16,48 +15,20 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import SearchInput from "@/components/search-input";
 import { format } from "date-fns";
-import AutoDismissAlert from "@/components/auto-dismiss-alert";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import ToastNotification from "@/components/toast-notifications";
 
 export default async function Home({ searchParams }: { searchParams: any }) {
   const searchQuery = searchParams?.search ?? "";
   const page = parseInt(searchParams?.page) || 1;
   const pageSize = 10; // Adjust as needed
-  const alertType = searchParams?.alert;
-
-  const renderAlert = () => {
-    if (alertType === "created") {
-      return (
-        <AutoDismissAlert
-          title="Snippet Created"
-          description="Your snippet was created successfully."
-        />
-      );
-    } else if (alertType === "deleted") {
-      return (
-        <AutoDismissAlert
-          title="Snippet Deleted"
-          description="Your snippet was deleted successfully."
-        />
-      );
-    } else if (alertType === "error") {
-      return (
-        <AutoDismissAlert
-          title="Error"
-          description="Something went wrong. Please try again later."
-        />
-      );
-    }
-    return null;
-  };
 
   const { snippets, totalSnippets } = searchQuery
     ? await searchSnippets(searchQuery, page, pageSize)
@@ -88,6 +59,7 @@ export default async function Home({ searchParams }: { searchParams: any }) {
 
   return (
     <div>
+      {/* Render the ToastNotification component */}
       <div className="flex flex-col md:flex-row mb-4 justify-between items-center gap-2">
         <h1 className="scroll-m-20 text-2xl font-semibold tracking-tight">
           ClipCode
@@ -103,8 +75,8 @@ export default async function Home({ searchParams }: { searchParams: any }) {
           </Button>
         </Link>
       </div>
+      <ToastNotification />
       <Separator className="my-4" />
-      {renderAlert()}
       <Table>
         <TableCaption>A list your recent snippets</TableCaption>
         <TableHeader>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/ui/darkmode-toggle";
+import { Toaster } from "@/components/ui/toaster";
 
 import { cn } from "@/lib/utils";
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         >
           <div className="container mx-auto px-20 py-12">{children}</div>
           <div className="fixed bottom-4 right-4">
+            <Toaster />
             <ModeToggle />
           </div>
         </ThemeProvider>
