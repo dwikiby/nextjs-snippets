@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { db } from "../app/db";
 import { redirect } from "next/navigation";
 
@@ -27,6 +28,8 @@ export async function editSnippets(id: number, code: string) {
       code,
     },
   });
+
+  revalidatePath(`/snippets/${id}`);
   redirect(`/snippets/${id}`);
 }
 
